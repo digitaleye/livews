@@ -1,0 +1,41 @@
+<html>
+<head>
+</head>
+<body>
+
+    <textarea id='cs' cols="50 rows=20"></textarea>
+
+    <script src="websocket-stream.js"></script>
+
+        <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+
+
+    <script>
+        (function(){
+            $(document).ready(function() {
+
+                var websocket = require('websocket-stream');
+                var ws = websocket('ws://localhost:8080');
+
+                var cs = document.getElementById('cs');
+
+
+
+                ws.on('data', function (module) {
+
+
+
+                    var y = JSON.parse(module)
+                    cs.value += y[0] + ' was created/updated\n';
+                    cs.scrollTop = cs.scrollHeight;
+                });
+
+//            ws.on('end', function(){
+//                cs.value = 'disconnected';
+//            })
+            })
+        })();
+
+    </script>
+</body>
+</html>

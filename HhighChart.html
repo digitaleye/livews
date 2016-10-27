@@ -1,0 +1,244 @@
+<HTML>
+<HEAD>
+    <TITLE>Crunchify - Dynamic Spline HighChart Example with
+        Multiple Y Axis</TITLE>
+    <script type="text/javascript"
+            src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <script src="websocket-stream.js"></script>
+    <script>
+
+
+            $(function () {
+                $(document).ready(function() {
+                    Highcharts.setOptions({
+                        global: {
+                            useUTC: false
+                        }
+                    });
+
+                    var chart;
+                    $('#container1').highcharts({
+                        chart: {
+                            type: 'spline',
+                            animation: Highcharts.svg, // don't animate in old IE
+                            marginRight: 10,
+                            events: {
+                                load: function() {
+                                    var websocket = require('websocket-stream');
+                                    var ws = websocket('ws://sv2lxsyedluri01.sv2.corp.equinix.com:9001/gims/api/streaming/dashboard/v1/socket/57eda28e0c59c8000a974ad6/df747ff8-91c0-44a6-80db-32054f322e38');
+
+                                    var series = this.series[0];
+                                    var series2 = this.series[1];
+
+                                    // set up the updating of the chart each second
+                                    ws.on('data', function (serverData) {
+    console.log(serverData)
+                                        var parsedArray = JSON.parse(serverData)
+
+                                    //setInterval(function() {
+                                        var x = (new Date()).getTime(), // current time
+                                                y = parsedArray[0];
+                                        z = parsedArray[1];
+
+                                        series.addPoint([x, y], false, true);
+                                        series2.addPoint([x, z], true, true);
+                                    //}, 1000);
+                                    })
+                                }
+                            }
+                        },
+                        title: {
+                            text: 'Live random data'
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            tickPixelInterval: 150
+                        },
+                        yAxis: [{
+                            title: {
+                                text: 'Value1'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                            {
+                                title: {
+                                    text: 'Value2'
+                                },
+                                plotLines: [{
+                                    value: 0,
+                                    width: 1,
+                                    color: '#808080'
+                                }]
+                            }],
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>'+ this.series.name +'</b><br/>'+
+                                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                                        Highcharts.numberFormat(this.y, 2);
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        exporting: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: 'Random data',
+                            data: (function() {
+                                // generate an array of random data
+                                var data = [],
+                                        time = (new Date()).getTime(),
+                                        i;
+
+                                for (i = -19; i <= 0; i++) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: Math.random()
+                                    });
+                                }
+                                return data;
+                            })()
+                        },
+                            {
+                                name: 'Random data',
+                                data: (function() {
+                                    // generate an array of random data
+                                    var data = [],
+                                            time = (new Date()).getTime(),
+                                            i;
+
+                                    for (i = -19; i <= 0; i++) {
+                                        data.push({
+                                            x: time + i * 1000,
+                                            y: Math.random()
+                                        });
+                                    }
+                                    return data;
+                                })()
+                            }]
+                    });
+                    $('#container2').highcharts({
+                        chart: {
+                            type: 'spline',
+                            animation: Highcharts.svg, // don't animate in old IE
+                            marginRight: 10,
+                            events: {
+                                load: function() {
+                                    var websocket = require('websocket-stream');
+                                    var ws = websocket('ws://localhost:8080');
+
+                                    var series = this.series[0];
+                                    var series2 = this.series[1];
+
+                                    // set up the updating of the chart each second
+                                    ws.on('data', function (serverData) {
+
+                                        var parsedArray = JSON.parse(serverData)
+
+                                        //setInterval(function() {
+                                        var x = (new Date()).getTime(), // current time
+                                                y = parsedArray[3];
+                                        z = parsedArray[4];
+
+                                        series.addPoint([x, y], false, true);
+                                        series2.addPoint([x, z], true, true);
+                                        //}, 1000);
+                                    })
+                                }
+                            }
+                        },
+                        title: {
+                            text: 'Live random data'
+                        },
+                        xAxis: {
+                            type: 'datetime',
+                            tickPixelInterval: 150
+                        },
+                        yAxis: [{
+                            title: {
+                                text: 'Value1'
+                            },
+                            plotLines: [{
+                                value: 0,
+                                width: 1,
+                                color: '#808080'
+                            }]
+                        },
+                            {
+                                title: {
+                                    text: 'Value2'
+                                },
+                                plotLines: [{
+                                    value: 0,
+                                    width: 1,
+                                    color: '#808080'
+                                }]
+                            }],
+                        tooltip: {
+                            formatter: function() {
+                                return '<b>'+ this.series.name +'</b><br/>'+
+                                        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) +'<br/>'+
+                                        Highcharts.numberFormat(this.y, 2);
+                            }
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        exporting: {
+                            enabled: false
+                        },
+                        series: [{
+                            name: 'Random data',
+                            data: (function() {
+                                // generate an array of random data
+                                var data = [],
+                                        time = (new Date()).getTime(),
+                                        i;
+
+                                for (i = -19; i <= 0; i++) {
+                                    data.push({
+                                        x: time + i * 1000,
+                                        y: Math.random()
+                                    });
+                                }
+                                return data;
+                            })()
+                        },
+                            {
+                                name: 'Random data',
+                                data: (function() {
+                                    // generate an array of random data
+                                    var data = [],
+                                            time = (new Date()).getTime(),
+                                            i;
+
+                                    for (i = -19; i <= 0; i++) {
+                                        data.push({
+                                            x: time + i * 1000,
+                                            y: Math.random()
+                                        });
+                                    }
+                                    return data;
+                                })()
+                            }]
+                    });
+                });
+
+            });
+    </script>
+</HEAD>
+<BODY>
+<div id="container1"
+     style="min-width: 728px; height: 400px; margin: 0 auto"></div>
+
+<div id="container2"
+     style="min-width: 728px; height: 400px; margin: 0 auto"></div>
+</BODY>
+</HTML>
