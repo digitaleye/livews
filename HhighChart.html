@@ -27,14 +27,14 @@
                             events: {
                                 load: function() {
                                     var websocket = require('websocket-stream');
-                                    var ws = websocket('ws://sv2lxsyedluri01.sv2.corp.equinix.com:9001/gims/api/streaming/dashboard/v1/socket/57eda28e0c59c8000a974ad6/df747ff8-91c0-44a6-80db-32054f322e38');
+                                    var ws = websocket('ws://localhost:8080');
 
                                     var series = this.series[0];
                                     var series2 = this.series[1];
 
                                     // set up the updating of the chart each second
                                     ws.on('data', function (serverData) {
-    console.log(serverData)
+
                                         var parsedArray = JSON.parse(serverData)
 
                                     //setInterval(function() {
